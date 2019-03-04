@@ -158,6 +158,7 @@
     <Compile Include="ViewModels\ComicBookArtistsAddViewModel.cs" />
     <Compile Include="ViewModels\ComicBooksAddViewModel.cs" />
     <Compile Include="ViewModels\ComicBooksBaseViewModel.cs" />
+    <Compile Include="ViewModels\ComicBooksDeleteViewModel.cs" />
     <Compile Include="ViewModels\ComicBooksEditViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
