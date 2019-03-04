@@ -1,6 +1,7 @@
 ﻿using ComicBookShared.Data;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -17,6 +18,7 @@ namespace ComicBookLibraryManagerWebApp.Controllers
         public BaseController()
         {
             Context = new Context();
+            Context.Database.Log = (message) => Debug.WriteLine(message);
             Repository = new Repository(Context);
         }
 

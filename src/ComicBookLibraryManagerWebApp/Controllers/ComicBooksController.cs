@@ -118,12 +118,38 @@ namespace ComicBookLibraryManagerWebApp.Controllers
             if (ModelState.IsValid)
             {
                 var comicBook = viewModel.ComicBook;
+                try
+                {
+                    _comicBooksRepository.Update(comicBook);
 
-                _comicBooksRepository.Update(comicBook);
+                    TempData["Message"] = "Your comic book was successfully updated!";
 
-                TempData["Message"] = "Your comic book was successfully updated!";
+                    return RedirectToAction("Detail", new { id = comicBook.Id });
+                }
+                catch (DbUpdateConcurrencyException ex)
+                {
+                    string message = null;
+                    var entityPropertyValues = ex.Entries.Single().GetDatabaseValues();
 
-                return RedirectToAction("Detail", new { id = comicBook.Id });
+                    if (entityPropertyValues == null)
+                    {
+                        message = "The comic book being updated has been deleted by another user.  Click the 'Cancel'" +
+                            "button to return to the list page.";
+
+                        viewModel.ComicBookHasBeenDeleted = true;
+
+                    } else
+                    {
+                        message = "The comic book being updated has already been updated by another user. If you still" +
+                            "want to make your changes then click the 'Save' button again.  Otherwise click the 'Cancel'" +
+                            "button to discard your changes.";
+                        comicBook.RowVersion = ((ComicBook)entityPropertyValues.ToObject()).RowVersion;
+                    }
+
+                    ModelState.AddModelError(string.Empty, message);
+                   
+                }
+
             }
 
             viewModel.Init(Repository, _seriesRepository, _artistsRepository);

@@ -23,5 +23,6 @@ namespace ComicBookLibraryManagerWebApp.ViewModels
             get { return ComicBook.Id; }
             set { ComicBook.Id = value; }
         }
+        public bool ComicBookHasBeenDeleted { get; set; }
     }
 }
