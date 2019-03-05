@@ -26,19 +26,35 @@ namespace ComicBookShared.Data
 
         public override ComicBook Get(int id, bool includeRelatedEntities = true)
         {
-            var comicBooks = Context.ComicBooks.AsQueryable();
-
-            if (includeRelatedEntities)
-            {
-                comicBooks = comicBooks
-                    .Include(cb => cb.Series)
-                    .Include(cb => cb.Artists.Select(a => a.Artist))
-                    .Include(cb => cb.Artists.Select(a => a.Role));
-            }
-
-            return comicBooks
+            var comicBook = Context.ComicBooks
                 .Where(cb => cb.Id == id)
                 .SingleOrDefault();
+            if (includeRelatedEntities)
+            {
+                var comicBookEntry = Context.Entry(comicBook);
+                comicBookEntry.Reference(cb => cb.Series).Load();
+                comicBookEntry.Collection(cb => cb.Artists)
+                    .Query()
+                    .Include(a => a.Artist)
+                    .Include(a => a.Role)
+                    .ToList();
+            }
+            return comicBook;
+
+            //var comicBooks = Context.ComicBooks.AsQueryable();
+
+            //if (includeRelatedEntities)
+            //{
+            //    comicBooks = comicBooks
+            //        .Include(cb => cb.Series)
+            //        .Include(cb => cb.Artists.Select(a => a.Artist))
+            //        .Include(cb => cb.Artists.Select(a => a.Role));
+            //}
+
+            //return comicBooks
+            //    .Where(cb => cb.Id == id)
+            //    .SingleOrDefault();
+
         }
 
         public void Delete (int id, byte[] rowVersion)
