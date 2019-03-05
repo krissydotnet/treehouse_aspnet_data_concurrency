@@ -18,6 +18,7 @@ namespace ComicBookShared.Data
         public override IList<ComicBook> GetList()
         {
             return Context.ComicBooks
+                .AsNoTracking()
                 .Include(cb => cb.Series)
                 .OrderBy(cb => cb.Series.Title)
                 .ThenBy(cb => cb.IssueNumber)
