@@ -31,13 +31,23 @@ namespace ComicBookShared.Data
                 .SingleOrDefault();
             if (includeRelatedEntities)
             {
-                var comicBookEntry = Context.Entry(comicBook);
-                comicBookEntry.Reference(cb => cb.Series).Load();
-                comicBookEntry.Collection(cb => cb.Artists)
-                    .Query()
-                    .Include(a => a.Artist)
-                    .Include(a => a.Role)
+                Context.Series
+                    .Where(s => s.Id == comicBook.SeriesId)
+                    .Single();
+
+                Context.ComicBookArtists
+                    .Include(cba => cba.Artist)
+                    .Include(cba => cba.Role)
+                    .Where(cba => cba.ComicBookId == id)
                     .ToList();
+
+                //var comicBookEntry = Context.Entry(comicBook);
+                //comicBookEntry.Reference(cb => cb.Series).Load();
+                //comicBookEntry.Collection(cb => cb.Artists)
+                //    .Query()
+                //    .Include(a => a.Artist)
+                //    .Include(a => a.Role)
+                //    .ToList();
             }
             return comicBook;
 
